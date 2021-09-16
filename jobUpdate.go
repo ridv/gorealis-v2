@@ -221,6 +221,11 @@ func (j *JobUpdate) IsService(isService bool) *JobUpdate {
 	return j
 }
 
+func (j *JobUpdate) Priority(priority int32) *JobUpdate {
+	j.task.Priority(priority)
+	return j
+}
+
 func (j *JobUpdate) TaskConfig() *aurora.TaskConfig {
 	return j.task.TaskConfig()
 }

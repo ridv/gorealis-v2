@@ -78,7 +78,8 @@ func TaskFromThrift(config *aurora.TaskConfig) *AuroraTask {
 		Role(config.Job.Role).
 		Name(config.Job.Name).
 		MaxFailure(config.MaxTaskFailures).
-		IsService(config.IsService)
+		IsService(config.IsService).
+		Priority(config.Priority)
 
 	if config.Tier != nil {
 		newTask.Tier(*config.Tier)
@@ -284,6 +285,12 @@ func (t *AuroraTask) MaxFailure(maxFail int32) *AuroraTask {
 // Restart the job's tasks if they fail
 func (t *AuroraTask) IsService(isService bool) *AuroraTask {
 	t.task.IsService = isService
+	return t
+}
+
+//set priority for preemption or priority-queueing
+func (t *AuroraTask) Priority(priority int32) *AuroraTask {
+	t.task.Priority = priority
 	return t
 }
 

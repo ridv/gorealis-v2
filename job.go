@@ -156,6 +156,11 @@ func (j *AuroraJob) IsService(isService bool) *AuroraJob {
 	return j
 }
 
+func (j *AuroraJob) Priority(priority int32) *AuroraJob {
+	j.task.Priority(priority)
+	return j
+}
+
 func (j *AuroraJob) TaskConfig() *aurora.TaskConfig {
 	return j.task.TaskConfig()
 }
