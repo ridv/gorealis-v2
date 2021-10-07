@@ -824,50 +824,46 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 	assert.NoError(t, r.KillJob(strategy.JobKey()))
 }
 
-// Test configuring an executor that doesn't exist for CreateJob API
 func TestRealisClient_GetJobSummary(t *testing.T) {
 	role := "vagrant"
+	env := "prod"
+	name := "GetJobSummaryJob"
 	// Create a single job
-	job := realis.NewJobUpdate().
-		Environment("prod").
+	job := realis.NewJob().
+		Environment(env).
 		Role(role).
-		Name("TestGetJobSummary").
+		Name(name).
 		ThermosExecutor(thermosExec).
 		CPU(.25).
 		RAM(4).
 		Disk(10).
-		InstanceCount(3).
-		WatchTime(20 * time.Second).
-		IsService(true).
-		BatchSize(2)
+		InstanceCount(1).
+		IsService(false)
 
-	result, err := r.CreateService(job)
-
+	err := r.CreateJob(job)
 	assert.NoError(t, err)
-	assert.NotNil(t, result)
 
-	var ok bool
-	var mErr error
+	success, err := r.MonitorScheduleStatus(job.JobKey(),
+		job.GetInstanceCount(),
+		aurora.ACTIVE_STATES,
+		1*time.Second,
+		150*time.Second)
+	assert.True(t, success)
+	assert.NoError(t, err)
 
-	if ok, mErr = r.MonitorJobUpdate(*result.GetKey(), 5*time.Second, 4*time.Minute); !ok || mErr != nil {
-		// Update may already be in a terminal state so don't check for error
-		err := r.AbortJobUpdate(*result.GetKey(), "Monitor timed out.")
-
-		err = r.KillJob(job.JobKey())
-
-		assert.NoError(t, err)
-	}
-
-	assert.True(t, ok)
-	assert.NoError(t, mErr)
-	// get job summary of the role
-	summary, mErr := r.GetJobSummary(role)
-	assert.NoError(t, mErr)
+	// get job summaries of the role
+	summary, err := r.GetJobSummary(role)
+	assert.NoError(t, err)
 	assert.NotNil(t, summary)
-	assert.Equal(t, len(summary.Summaries), 1)
+	jobCount := 0
+	for _, s := range summary.Summaries {
+		jobKey := s.Job.TaskConfig.Job
+		if jobKey.Environment == env && jobKey.Name == name {
+			jobCount++
+		}
+	}
+	assert.Equal(t, 1, jobCount)
 
-	// Kill task test task after confirming it came up fine
 	err = r.KillJob(job.JobKey())
-
 	assert.NoError(t, err)
 }
