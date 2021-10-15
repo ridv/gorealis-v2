@@ -879,14 +879,10 @@ func TestRealisClient_GetJobSummary(t *testing.T) {
 		RAM(4).
 		Disk(10).
 		InstanceCount(3).
-		WatchTime(20 * time.Second).
 		IsService(true).
 		Production(false).
 		Tier("preemptible").
-		Priority(0).
-		BatchSize(2)
-
-	result, err := r.CreateService(job)
+		Priority(0)
 
 	err := r.CreateJob(job)
 	assert.NoError(t, err)
