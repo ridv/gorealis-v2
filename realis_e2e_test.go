@@ -54,6 +54,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestNonExistentEndpoint(t *testing.T) {
+	t.Parallel()
+
 	backoff := realis.Backoff{ // Reduce penalties for this test to make it quick
 		Steps:    5,
 		Duration: 1 * time.Second,
@@ -84,6 +86,8 @@ func TestNonExistentEndpoint(t *testing.T) {
 }
 
 func TestBadCredentials(t *testing.T) {
+	t.Parallel()
+
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("incorrect", "password"),
 		realis.Debug())
@@ -94,7 +98,7 @@ func TestBadCredentials(t *testing.T) {
 	job := realis.NewJob().
 		Environment("prod").
 		Role("vagrant").
-		Name("create_thermos_job_test").
+		Name("create_thermos_job_bad_creds_test").
 		ThermosExecutor(thermosExec).
 		CPU(.5).
 		RAM(64).
@@ -110,6 +114,8 @@ func TestBadCredentials(t *testing.T) {
 }
 
 func TestThriftBinary(t *testing.T) {
+	t.Parallel()
+
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("aurora", "secret"),
 		realis.Timeout(20*time.Second),
@@ -131,6 +137,8 @@ func TestThriftBinary(t *testing.T) {
 }
 
 func TestThriftJSON(t *testing.T) {
+	t.Parallel()
+
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("aurora", "secret"),
 		realis.Timeout(20*time.Second),
@@ -153,6 +161,8 @@ func TestThriftJSON(t *testing.T) {
 }
 
 func TestNoopLogger(t *testing.T) {
+	t.Parallel()
+
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("aurora", "secret"),
 		realis.SetLogger(realis.NoopLogger{}))
@@ -173,6 +183,8 @@ func TestNoopLogger(t *testing.T) {
 }
 
 func TestLeaderFromZK(t *testing.T) {
+	t.Parallel()
+
 	cluster := realis.GetDefaultClusterFromZKUrl("192.168.33.2:2181")
 	url, err := realis.LeaderFromZK(*cluster)
 
@@ -181,6 +193,8 @@ func TestLeaderFromZK(t *testing.T) {
 
 }
 func TestInvalidAuroraURL(t *testing.T) {
+	t.Parallel()
+
 	for _, url := range []string{
 		"http://doesntexist.com:8081/apitest",
 		"test://doesntexist.com:8081",
@@ -193,6 +207,8 @@ func TestInvalidAuroraURL(t *testing.T) {
 }
 
 func TestValidAuroraURL(t *testing.T) {
+	t.Parallel()
+
 	for _, url := range []string{
 		"http://domain.com:8081/api",
 		"https://domain.com:8081/api",
@@ -209,7 +225,6 @@ func TestValidAuroraURL(t *testing.T) {
 }
 
 func TestRealisClient_ReestablishConn(t *testing.T) {
-
 	// Test that we're able to tear down the old connection and create a new one.
 	err := r.ReestablishConn()
 
@@ -217,14 +232,14 @@ func TestRealisClient_ReestablishConn(t *testing.T) {
 }
 
 func TestGetCACerts(t *testing.T) {
+	t.Parallel()
+
 	certs, err := realis.GetCerts("./examples/certs")
 	assert.NoError(t, err)
 	assert.Equal(t, len(certs.Subjects()), 2)
-
 }
 
 func TestRealisClient_CreateJob_Thermos(t *testing.T) {
-
 	role := "vagrant"
 	job := realis.NewJob().
 		Environment("prod").
@@ -251,7 +266,7 @@ func TestRealisClient_CreateJob_Thermos(t *testing.T) {
 
 	// Fetch all Jobs
 	result, err := r.GetJobs(role)
-	fmt.Printf("GetJobs length: %+v \n", len(result.Configs))
+	fmt.Println("GetJobs length: ", len(result.Configs))
 	assert.Len(t, result.Configs, 1)
 	assert.NoError(t, err)
 
@@ -280,7 +295,6 @@ func TestRealisClient_CreateJob_Thermos(t *testing.T) {
 
 // Test configuring an executor that doesn't exist for CreateJob API
 func TestRealisClient_CreateJob_ExecutorDoesNotExist(t *testing.T) {
-
 	// Create a single job
 	job := realis.NewJob().
 		Environment("prod").
@@ -299,7 +313,6 @@ func TestRealisClient_CreateJob_ExecutorDoesNotExist(t *testing.T) {
 
 // Test configuring an executor that doesn't exist for CreateJob API
 func TestRealisClient_GetPendingReason(t *testing.T) {
-
 	env := "prod"
 	role := "vagrant"
 	name := "pending_reason_test"
@@ -333,7 +346,6 @@ func TestRealisClient_GetPendingReason(t *testing.T) {
 }
 
 func TestRealisClient_CreateService_WithPulse_Thermos(t *testing.T) {
-
 	fmt.Println("Creating service")
 	role := "vagrant"
 	job := realis.NewJobUpdate().
@@ -813,7 +825,7 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 	job := realis.NewJob().
 		Environment("prod").
 		Role("vagrant").
-		Name("BatchAwareAutoPauseTest").
+		Name("batch_aware_auto_pause_test").
 		ThermosExecutor(thermosExec).
 		CPU(.01).
 		RAM(4).
@@ -844,7 +856,11 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 		}
 
 		assert.Equal(t, i, curStep)
-		require.NoError(t, r.ResumeJobUpdate(key, "auto resuming test"))
+
+		if i != len(updateGroups)-1 {
+			require.NoError(t, err)
+			require.NoError(t, r.ResumeJobUpdate(key, "auto resuming test"))
+		}
 	}
 	assert.NoError(t, r.KillJob(strategy.JobKey()))
 }
@@ -852,7 +868,7 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 func TestRealisClient_GetJobSummary(t *testing.T) {
 	role := "vagrant"
 	env := "prod"
-	name := "GetJobSummaryJob"
+	name := "test_get_job_summary"
 	// Create a single job
 	job := realis.NewJob().
 		Environment(env).
