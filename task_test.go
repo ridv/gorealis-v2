@@ -35,6 +35,7 @@ func TestAuroraTask_Clone(t *testing.T) {
 		Disk(1000).
 		IsService(true).
 		Priority(1).
+		Production(false).
 		AddPorts(10).
 		Tier("preferred").
 		MaxFailure(23).

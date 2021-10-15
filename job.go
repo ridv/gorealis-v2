@@ -161,6 +161,11 @@ func (j *AuroraJob) Priority(priority int32) *AuroraJob {
 	return j
 }
 
+func (j *AuroraJob) Production(production bool) *AuroraJob {
+	j.task.Production(production)
+	return j
+}
+
 func (j *AuroraJob) TaskConfig() *aurora.TaskConfig {
 	return j.task.TaskConfig()
 }

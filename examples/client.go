@@ -124,6 +124,9 @@ func main() {
 			RAM(64).
 			Disk(100).
 			IsService(true).
+			Production(false).
+			Tier("preemptible").
+			Priority(0).
 			InstanceCount(1).
 			AddPorts(1).
 			ThermosExecutor(thermosExec)
@@ -138,6 +141,9 @@ func main() {
 			RAM(512).
 			Disk(100).
 			IsService(true).
+			Production(false).
+			Tier("preemptible").
+			Priority(0).
 			InstanceCount(1).
 			AddPorts(4).
 			AddLabel("fileName", "sample-app/docker-compose.yml").
@@ -151,6 +157,9 @@ func main() {
 			RAM(64).
 			Disk(100).
 			IsService(true).
+			Production(false).
+			Tier("preemptible").
+			Priority(0).
 			InstanceCount(1).
 			AddPorts(1)
 	default:

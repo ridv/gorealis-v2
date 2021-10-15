@@ -100,6 +100,9 @@ func TestBadCredentials(t *testing.T) {
 		RAM(64).
 		Disk(100).
 		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
 		InstanceCount(2).
 		AddPorts(1)
 
@@ -232,6 +235,9 @@ func TestRealisClient_CreateJob_Thermos(t *testing.T) {
 		RAM(64).
 		Disk(100).
 		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
 		InstanceCount(2).
 		AddPorts(1)
 
@@ -339,6 +345,9 @@ func TestRealisClient_CreateService_WithPulse_Thermos(t *testing.T) {
 		Disk(100).
 		ThermosExecutor(thermosExec).
 		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
 		InstanceCount(2).
 		AddPorts(1).
 		AddLabel("currentTime", time.Now().String()).
@@ -424,6 +433,9 @@ func TestRealisClient_CreateService(t *testing.T) {
 		InstanceCount(3).
 		WatchTime(20 * time.Second).
 		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
 		BatchSize(2)
 
 	result, err := r.CreateService(job)
@@ -488,6 +500,9 @@ func TestRealisClient_ScheduleCronJob_Thermos(t *testing.T) {
 		RAM(64).
 		Disk(100).
 		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
 		InstanceCount(1).
 		AddPorts(1).
 		CronSchedule("* * * * *").
@@ -704,6 +719,9 @@ func TestRealisClient_PartitionPolicy(t *testing.T) {
 		RAM(64).
 		Disk(100).
 		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
 		InstanceCount(2).
 		BatchSize(2).
 		PartitionPolicy(true, partitionDelay)
@@ -734,7 +752,10 @@ func TestRealisClient_UpdateStrategies(t *testing.T) {
 		RAM(4).
 		Disk(10).
 		InstanceCount(6).
-		IsService(true)
+		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0)
 
 	// Needed to populate the task config correctly
 	assert.NoError(t, job.BuildThermosPayload())
@@ -798,7 +819,11 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 		RAM(4).
 		Disk(10).
 		InstanceCount(6).
-		IsService(true)
+		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0)
+
 	updateGroups := []int32{1, 2, 3}
 	strategy := realis.JobUpdateFromAuroraTask(job.AuroraTask()).
 		VariableBatchStrategy(true, updateGroups...).
@@ -837,8 +862,15 @@ func TestRealisClient_GetJobSummary(t *testing.T) {
 		CPU(.25).
 		RAM(4).
 		Disk(10).
-		InstanceCount(1).
-		IsService(false)
+		InstanceCount(3).
+		WatchTime(20 * time.Second).
+		IsService(true).
+		Production(false).
+		Tier("preemptible").
+		Priority(0).
+		BatchSize(2)
+
+	result, err := r.CreateService(job)
 
 	err := r.CreateJob(job)
 	assert.NoError(t, err)

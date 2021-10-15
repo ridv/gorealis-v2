@@ -85,6 +85,10 @@ func TaskFromThrift(config *aurora.TaskConfig) *AuroraTask {
 		newTask.Tier(*config.Tier)
 	}
 
+	if config.Production != nil {
+		newTask.Production(*config.Production)
+	}
+
 	if config.ExecutorConfig != nil {
 		newTask.
 			ExecutorName(config.ExecutorConfig.Name).
@@ -291,6 +295,11 @@ func (t *AuroraTask) IsService(isService bool) *AuroraTask {
 //set priority for preemption or priority-queueing
 func (t *AuroraTask) Priority(priority int32) *AuroraTask {
 	t.task.Priority = priority
+	return t
+}
+
+func (t *AuroraTask) Production(production bool) *AuroraTask {
+	t.task.Production = &production
 	return t
 }
 

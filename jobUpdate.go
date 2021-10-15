@@ -226,6 +226,11 @@ func (j *JobUpdate) Priority(priority int32) *JobUpdate {
 	return j
 }
 
+func (j *JobUpdate) Production(production bool) *JobUpdate {
+	j.task.Production(production)
+	return j
+}
+
 func (j *JobUpdate) TaskConfig() *aurora.TaskConfig {
 	return j.task.TaskConfig()
 }

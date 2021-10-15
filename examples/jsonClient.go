@@ -177,6 +177,8 @@ func main() {
 			RAM(job.RAM).
 			Disk(job.Disk).
 			IsService(job.Service).
+			Tier("preemptible").
+			Priority(0).
 			InstanceCount(job.Instances).
 			AddPorts(job.Ports)
 
