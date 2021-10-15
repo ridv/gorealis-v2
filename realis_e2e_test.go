@@ -54,8 +54,6 @@ func TestMain(m *testing.M) {
 }
 
 func TestNonExistentEndpoint(t *testing.T) {
-	t.Parallel()
-
 	backoff := realis.Backoff{ // Reduce penalties for this test to make it quick
 		Steps:    5,
 		Duration: 1 * time.Second,
@@ -86,8 +84,6 @@ func TestNonExistentEndpoint(t *testing.T) {
 }
 
 func TestBadCredentials(t *testing.T) {
-	t.Parallel()
-
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("incorrect", "password"),
 		realis.Debug())
@@ -114,8 +110,6 @@ func TestBadCredentials(t *testing.T) {
 }
 
 func TestThriftBinary(t *testing.T) {
-	t.Parallel()
-
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("aurora", "secret"),
 		realis.Timeout(20*time.Second),
@@ -137,8 +131,6 @@ func TestThriftBinary(t *testing.T) {
 }
 
 func TestThriftJSON(t *testing.T) {
-	t.Parallel()
-
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("aurora", "secret"),
 		realis.Timeout(20*time.Second),
@@ -161,8 +153,6 @@ func TestThriftJSON(t *testing.T) {
 }
 
 func TestNoopLogger(t *testing.T) {
-	t.Parallel()
-
 	r, err := realis.NewClient(realis.SchedulerUrl("http://192.168.33.7:8081"),
 		realis.BasicAuth("aurora", "secret"),
 		realis.SetLogger(realis.NoopLogger{}))
@@ -183,8 +173,6 @@ func TestNoopLogger(t *testing.T) {
 }
 
 func TestLeaderFromZK(t *testing.T) {
-	t.Parallel()
-
 	cluster := realis.GetDefaultClusterFromZKUrl("192.168.33.2:2181")
 	url, err := realis.LeaderFromZK(*cluster)
 
@@ -193,8 +181,6 @@ func TestLeaderFromZK(t *testing.T) {
 
 }
 func TestInvalidAuroraURL(t *testing.T) {
-	t.Parallel()
-
 	for _, url := range []string{
 		"http://doesntexist.com:8081/apitest",
 		"test://doesntexist.com:8081",
@@ -207,8 +193,6 @@ func TestInvalidAuroraURL(t *testing.T) {
 }
 
 func TestValidAuroraURL(t *testing.T) {
-	t.Parallel()
-
 	for _, url := range []string{
 		"http://domain.com:8081/api",
 		"https://domain.com:8081/api",
@@ -232,8 +216,6 @@ func TestRealisClient_ReestablishConn(t *testing.T) {
 }
 
 func TestGetCACerts(t *testing.T) {
-	t.Parallel()
-
 	certs, err := realis.GetCerts("./examples/certs")
 	assert.NoError(t, err)
 	assert.Equal(t, len(certs.Subjects()), 2)
