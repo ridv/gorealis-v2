@@ -269,7 +269,7 @@ func TestRealisClient_CreateJob_Thermos(t *testing.T) {
 		err := r.KillJob(job.JobKey())
 		assert.NoError(t, err)
 
-		success, err := r.MonitorInstances(job.JobKey(), 0, 1*time.Second, 60*time.Second)
+		success, err := r.MonitorInstances(job.JobKey(), 0, 1*time.Second, 90*time.Second)
 		assert.True(t, success)
 		assert.NoError(t, err)
 	})
