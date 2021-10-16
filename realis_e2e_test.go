@@ -813,16 +813,13 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 		RAM(4).
 		Disk(10).
 		InstanceCount(6).
-		IsService(true).
-		Production(false).
-		Tier("preemptible").
-		Priority(0)
+		IsService(true)
 
 	updateGroups := []int32{1, 2, 3}
 	strategy := realis.JobUpdateFromAuroraTask(job.AuroraTask()).
 		VariableBatchStrategy(true, updateGroups...).
 		InstanceCount(6).
-		WatchTime(time.Second * 1)
+		WatchTime(1000)
 
 	result, err := r.StartJobUpdate(strategy, "")
 	require.NoError(t, err)
@@ -835,7 +832,7 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 		if mErr != nil {
 			fmt.Println(mErr)
 			// Update may already be in a terminal state so don't check for error
-			assert.NoError(t, r.AbortJobUpdate(key, "Monitor timed out."))
+			_ = r.AbortJobUpdate(key, "Monitor timed out.")
 		}
 
 		assert.Equal(t, i, curStep)
