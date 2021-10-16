@@ -822,7 +822,7 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 	strategy := realis.JobUpdateFromAuroraTask(job.AuroraTask()).
 		VariableBatchStrategy(true, updateGroups...).
 		InstanceCount(6).
-		WatchTime(time.Second*1)
+		WatchTime(time.Second * 1)
 
 	result, err := r.StartJobUpdate(strategy, "")
 	require.NoError(t, err)
