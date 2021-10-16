@@ -831,8 +831,9 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 	key := *result.GetKey()
 
 	for i := range updateGroups {
-		curStep, mErr := r.MonitorAutoPausedUpdate(key, time.Second*5, time.Second*240)
+		curStep, mErr := r.MonitorAutoPausedUpdate(key, time.Second*5, time.Minute*5)
 		if mErr != nil {
+			fmt.Println(mErr)
 			// Update may already be in a terminal state so don't check for error
 			assert.NoError(t, r.AbortJobUpdate(key, "Monitor timed out."))
 		}
