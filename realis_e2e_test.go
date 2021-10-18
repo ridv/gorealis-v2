@@ -815,7 +815,7 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 		InstanceCount(6).
 		IsService(true)
 
-	updateGroups := []int32{1, 2, 3}
+	updateGroups := []int32{1, 3}
 	strategy := realis.JobUpdateFromAuroraTask(job.AuroraTask()).
 		VariableBatchStrategy(true, updateGroups...).
 		InstanceCount(6).
