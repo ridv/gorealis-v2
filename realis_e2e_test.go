@@ -842,6 +842,7 @@ func TestRealisClient_BatchAwareAutoPause(t *testing.T) {
 			require.NoError(t, r.ResumeJobUpdate(key, "auto resuming test"))
 		}
 	}
+	assert.NoError(t, r.AbortJobUpdate(key, ""))
 	assert.NoError(t, r.KillJob(strategy.JobKey()))
 }
 
