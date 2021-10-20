@@ -70,6 +70,7 @@ services:
         -shiro_realm_modules=INI_AUTHNZ
         -shiro_ini_path=/etc/aurora/security.ini
         -min_required_instances_for_sla_check=1
+        -thermos_executor_cpu=0.09
     volumes:
       - ./.aurora-config:/etc/aurora
     networks:
